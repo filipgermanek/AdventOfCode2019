@@ -21,7 +21,6 @@ defmodule AdventOfCode.ProducerConsumer do
   end
 
   def handle_events(inputValues, _from, state) do
-    # temp = [1969]
     events = [Enum.map(inputValues, &calculateFuel/1) |> Enum.sum]
     {:noreply, events, state}
   end
