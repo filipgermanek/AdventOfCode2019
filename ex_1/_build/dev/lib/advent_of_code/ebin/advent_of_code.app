@@ -1,0 +1,11 @@
+{application,advent_of_code,
+             [{applications,[kernel,stdlib,elixir,logger,gen_stage]},
+              {description,"advent_of_code"},
+              {modules,['Elixir.AdventOfCode',
+                        'Elixir.AdventOfCode.Application',
+                        'Elixir.AdventOfCode.Consumer',
+                        'Elixir.AdventOfCode.Producer',
+                        'Elixir.AdventOfCode.ProducerConsumer']},
+              {registered,[]},
+              {vsn,"0.1.0"},
+              {mod,{'Elixir.AdventOfCode.Application',[]}}]}.
