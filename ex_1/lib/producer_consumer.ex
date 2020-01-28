@@ -21,6 +21,7 @@ defmodule AdventOfCode.ProducerConsumer do
   end
 
   def handle_events(inputValues, _from, state) do
+    #events = [Enum.map(inputValues, Task.async(AdventOfCode.ProducerConsumer, :calculateFuel) &calculateFuel/1) |> Enum.sum]
     events = [Enum.map(inputValues, &calculateFuel/1) |> Enum.sum]
     {:noreply, events, state}
   end
