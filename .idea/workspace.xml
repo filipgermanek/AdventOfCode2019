@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="29ef754d-56dd-462b-aa7b-d6c1d479af86" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/elixir.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/elixir.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ex_3/manhattan_distance.ex" beforeDir="false" afterPath="$PROJECT_DIR$/ex_3/manhattan_distance.ex" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ex_5/ex5.ex" beforeDir="false" afterPath="$PROJECT_DIR$/ex_5/ex5.ex" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,9 +27,14 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="width" value="1280" />
-    <option name="height" value="800" />
+  <component name="ProjectId" id="1XJUjrhHhYkuGGD403Fg1MAyhGP" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
