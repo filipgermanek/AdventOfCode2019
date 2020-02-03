@@ -1,79 +1,69 @@
 defmodule ManhattanDistance do
-  def recogniseDirection(direction, x, y, value, finalValue, elements) do
-    cond do
-      direction == "R" -> createPoint(direction, x + 1, y, value + 1, finalValue, elements)
-      direction == "L" -> createPoint(direction, x - 1 , y, value + 1, finalValue, elements)
-      direction == "U" -> createPoint(direction, x, y + 1 , value + 1, finalValue, elements)
-      direction == "D" -> createPoint(direction, x, y - 1, value + 1, finalValue, elements)
-    end
-  end
-
-  def createPoint(direction, x, y, value, finalValue, elements) do
-    cond do
-      value < finalValue -> recogniseDirection(direction, x, y, value, finalValue, elements ++ [[x, y]])
-      value == finalValue -> elements ++ [[x, y]]
-    end
-  end
-
-  def addGridPointToMap(instructionsArray, index, x, y, elements) do
-    atomElement = Enum.at(instructionsArray, index)
-    instruction = Atom.to_string(atomElement)
-    direction = String.slice(instruction, 7..7)
-    value = String.to_integer(String.slice(instruction, 8..String.length(instruction)))
-  #  IO.inspect(elements)
-    newElements = recogniseDirection(direction, x, y, 0, value, elements)
-  # IO.inspect(newElements)
-    if Enum.at(instructionsArray, index + 1) != nil do
-      coords = Enum.at(newElements, Enum.count(newElements) - 1)
-      addGridPointToMap(instructionsArray, index + 1, Enum.at(coords, 0), Enum.at(coords, 1), newElements)
-    else
-      newElements
-    end
-
-  end
-
-  def getWireCoordinates(instructionsArray) do
-    addGridPointToMap(instructionsArray, 0, 0, 0, [])
+  def formatInput(inputArray) do
+    Enum.map(inputArray, fn x ->
+      stringX = Atom.to_string(x)
+      String.slice(stringX, 7..String.length(stringX)-1)
+    end)
   end
 
   def init do
-    inputOne =[R990,U796,R784,U604,R6,U437,L96,U285,L361,U285,L339,D512,L389,D840,L425,U444,L485,D528,L262,U178,L80,U2,R952,U459,L361,D985,R56,U135,R953,D913,L361,U120,L329,U965,L294,U890,L126,U214,R232,D444,L714,U791,R888,U923,R378,U233,L654,D703,R902,D715,R469,D60,R990,U238,R755,U413,L409,D601,R452,U504,R472,D874,L766,D594,R696,U398,R593,D889,R609,D405,L962,U176,L237,U642,L393,D91,L463,U936,R199,D136,R601,D8,R359,D863,L410,U598,L444,D34,R664,D323,R72,D98,L565,D476,L197,D132,R510,U665,R936,U3,R385,U144,L284,D713,L605,U106,R543,D112,R528,D117,R762,U330,R722,U459,L229,U375,L870,D81,R623,U95,L148,D530,L622,D62,R644,D365,L214,U847,R31,D832,L648,D293,R79,D748,L270,U159,L8,U83,R195,U912,L409,D649,L750,D286,L623,D956,R81,U775,R44,D437,L199,U698,L42,U419,L883,U636,L323,U89,L246,D269,L992,U739,R62,U47,R63,U17,L234,U135,R126,D208,L69,U550,L123,D66,R463,U992,R411,D276,L851,U520,R805,D300,L894,U171,L922,D901,R637,U907,R328,U433,L316,D644,L398,U10,L648,D190,R884,U474,R397,D718,L925,D578,R249,U959,L697,D836,R231,U806,R982,U827,R579,U830,L135,D666,R818,D502,L898,D585,R91,D190,L255,U535,R56,U390,R619,D815,L300,D81,R432,D70,L940,D587,L259,D196,R241,U4,R440,U678,R185,U451,R733,D984,R464,D298,L738,U600,R353,D44,L458,U559,L726,D786,L307,D333,L226,D463,R138,D142,L521,D201,R51,D202,L204,U130,L333,U597,R298,U42,L951,U66,R312,U707,L555,D225,L360,D12,L956,D361,L989,D625,L944,D398,L171,D982,L377,U114,L339,U164,R39,D793,R992,U834,R675,U958,R334,D697,L734,D40,L149,U394,R976]
-    t(inputOne, 0, [])
-    #Enum.map(inputOne, fn el -> createPath() end)
+    inputOne = [R1000,U564,L752,D449,R783,D938,L106,U130,R452,U462,R861,U654,L532,D485,R761,U336,L648,U671,L618,U429,R122,D183,L395,U662,R900,U644,L168,D778,L268,U896,L691,D852,L987,U462,R346,U103,R688,U926,R374,D543,R688,D682,R992,D140,L379,D245,L423,D504,R957,U937,L67,D560,L962,U275,R688,D617,L778,U581,R672,D402,R3,U251,R593,U897,L866,U189,L8,D5,R761,U546,R594,D880,L318,U410,L325,U564,L889,U688,L472,D146,R317,D314,L229,U259,R449,D630,L431,U4,R328,D727,R298,D558,R81,D508,L160,U113,L994,U263,L193,D631,R881,D608,L924,U447,R231,U885,L157,D739,R656,D121,R704,U437,L710,D207,R150,U406,R816,U683,R496,D715,L899,U757,L579,D684,L85,D354,R198,D411,R818,U772,L910,U493,R38,D130,L955,U741,R744,D224,L485,U201,L903,D904,R748,U288,R34,U673,R503,D931,L190,U547,L83,D341,R459,U114,L758,U220,L506,U444,L472,D941,L68,D910,R415,U668,L957,U709,R817,U116,R699,D424,R548,D285,R347,U396,R791,U62,L785,D360,L628,U415,L568,D429,R154,D840,L865,U181,L106,D564,L452,U156,L967,D421,R41,U500,L316,D747,R585,D858,L809,U402,L484,U752,R319,D563,R273,U84,R53,U874,L849,U90,R194,D969,R907,D625,L298,D984,R744,U172,R537,D177,L14,D921,L156,U133,R429,D787,R688,U894,L154,U192,R663,D225,L781,U426,R623,D60,L723,D995,R814,D195,L951,D594,R994,D543,L893,U781,R899,U85,R270,U303,R256,U977,R894,U948,R270,D301,L874,D388,R290,U986,L660,D741,L25,U381,R814,D150,R578,D529,R550,D176,R221,D653,R529,U83,R351,D462,R492,U338,R611,D5,L137,D547,R305,U356,R83,D880,R522,U681,R353,D54,R910,U774,L462,U48,L511,U750,R98,U455,R585,D579,L594]
+    inputTwo = [L1003,U936,R846,U549,L824,D684,R944,U902,R177,U875,L425,U631,L301,U515,L790,D233,R49,U408,L184,D103,R693,D307,L557,D771,L482,D502,R759,D390,L378,U982,L430,U337,L970,U400,R829,U212,L92,D670,R741,D566,L797,U477,L377,U837,R19,U849,L21,D870,L182,U414,L586,U768,L637,U135,R997,U405,L331,D256,L22,D46,L504,D660,L757,U676,L360,D499,R180,D723,L236,U78,R218,U523,L71,D60,L485,U503,L352,D969,R747,U831,L285,D859,L245,D517,L140,U463,L895,U284,L546,U342,R349,D438,R816,U21,L188,U482,L687,D903,L234,U15,L758,D294,R789,D444,L498,D436,L240,D956,L666,U686,R978,D827,R919,U108,R975,D35,R475,U59,L374,U24,L26,D497,R454,D388,R180,D561,R80,D433,R439,D818,R962,D912,R247,U972,R948,D807,R867,D946,R725,U395,R706,U187,L17,U332,L862,D660,L70,U608,R223,D506,R592,U357,R520,D149,L572,D800,L570,D358,R648,U174,R520,U153,L807,U92,R840,U560,L938,D599,R972,D539,R385,D495,L26,D894,L907,D103,L494,U51,L803,D620,L68,D226,R947,U210,R864,D755,L681,D520,L867,D577,R378,D741,L91,D294,L289,D531,L301,U638,L496,U83,L278,D327,R351,D697,L593,U331,R91,D967,R419,D327,R78,U304,R462,D2,L656,D700,L27,D29,L598,U741,L349,D957,R161,U688,R326,D798,L263,U45,L883,U982,R116,D835,L878,U253,L232,D732,R639,D408,R997,D867,R726,D258,L65,D600,L315,U783,L761,U606,R67,D949,L475,U542,L231,U279,L950,U649,L670,D870,L264,U958,R748,D365,R252,D129,R754,U27,R571,D690,L671,U143,L750,U303,L412,U24,L443,D550,R826,U699,L558,U543,L881,D204,R248,D192,R813,U316,L76,D78,R523,U716,L422,D793,R684,D175,L347,D466,L219,D140,L803,U433,R96]
+    inputOneFormatted = formatInput(inputOne)
+    inputTwoFormatted = formatInput(inputTwo)
+    visitedPointsMap = %{}
+    wireOnePoints = produceVisitedPointsForWireInput(visitedPointsMap, inputOneFormatted, 0, 0, 0)
+    wireTwoPoints = produceVisitedPointsForWireInput(visitedPointsMap, inputTwoFormatted, 0, 0, 0)
+    duplicatePoints = Map.keys(wireOnePoints)
+                      |> Enum.filter(fn x -> Map.has_key?(wireTwoPoints, x) end)
+                      |> Enum.map(fn x -> x end)
+                      |> Enum.map(fn x ->calculateManhattanDistance(x) end)
+                      |> Enum.sort
+    IO.inspect(duplicatePoints)
+    Enum.at(duplicatePoints, 0)
   end
 
-  def t(inputArray, index, result) do
-    if Enum.at(result, index - 1) != nil do
-      startPoint = Enum.at(result, index - 1)
-      line = createPath(startPoint, Enum.at(inputArray, index))
-      if Enum.at(inputArray, index + 1) == nil do
-        result ++ [line]
-      else
-        t(inputArray, index + 1, result ++ [line])
+  def calculateManhattanDistance(key) do
+    keySplit = String.split(key, "_", parts: 2)
+    x = String.to_integer(Enum.at(keySplit, 0))
+    y = String.to_integer(Enum.at(keySplit, 1))
+    abs(0 - x) + abs(0 - y)
+  end
+
+  def produceVisitedPointsForWireInput(visitedPointsMap, inputArray, index, x, y) do
+    currentElement = Enum.at(inputArray, index)
+    direction = String.slice(currentElement, 0..0)
+    value = String.to_integer(String.slice(currentElement, 1..String.length(currentElement)-1))
+    modifiedMap = funkcja(visitedPointsMap, direction, value, x, y, 1)
+    nextElement = Enum.at(inputArray, index + 1)
+    if nextElement != nil do
+      cond do
+        direction == "R" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x + value, y)
+        direction == "L" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x - value, y)
+        direction == "U" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x, y + value)
+        direction == "D" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x, y - value)
       end
     else
-      startPoint =[0,0]
-      line = createPath(startPoint, Enum.at(inputArray, index))
-       if Enum.at(inputArray, index + 1) == nil do
-      result ++ [line]
-    else
-      t(inputArray, index + 1, result ++ [line])
+      modifiedMap
     end
-    end
-
-
   end
 
-  def createPath(startPoint, command) do
-    instruction = Atom.to_string(command)
-    direction = String.slice(instruction, 7..7)
-    value = String.to_integer(String.slice(instruction, 8..String.length(instruction)))
+  def getPointKey(direction, startX, startY, value) do
     cond do
-      direction == "R" -> [Enum.at(startPoint, 0) + value, Enum.at(startPoint, 1)]
-      direction == "L" -> [Enum.at(startPoint, 0) - value, Enum.at(startPoint, 1)]
-      direction == "U" -> [Enum.at(startPoint, 0), Enum.at(startPoint, 1) + value]
-      direction == "D" -> [Enum.at(startPoint, 0), Enum.at(startPoint, 1) - value]
+      direction == "R" -> "#{startX + value}_#{startY}"
+      direction == "L" -> "#{startX - value}_#{startY}"
+      direction == "U" -> "#{startX}_#{startY + value}"
+      direction == "D" -> "#{startX}_#{startY - value}"
     end
+  end
 
+  def funkcja(pointsMap, direction, value, previousX, previousY, iterator) do
+    key = getPointKey(direction, previousX, previousY, iterator)
+    modifiedMap = Map.put(pointsMap, key, true)
+    if iterator <= value do
+      funkcja(modifiedMap, direction, value, previousX, previousY, iterator+1)
+    else
+      modifiedMap
+    end
   end
 end
