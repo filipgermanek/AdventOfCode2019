@@ -3,7 +3,8 @@ defmodule Ex4 do
     cond do
       Enum.count(numDigits) == index + 1 -> false
       Enum.at(numDigits, index) == Enum.at(numDigits, index + 1)
-      || Enum.at(numDigits, index) == Enum.at(numDigits, index - 1) -> true
+      && Enum.at(numDigits, index) != Enum.at(numDigits, index - 1)
+      && Enum.at(numDigits, index) != Enum.at(numDigits, index + 2)-> true
       true -> hasSameNumNextToEachOther(numDigits, index + 1)
     end
   end
@@ -21,8 +22,8 @@ defmodule Ex4 do
 
   def calculateAnswer do
     #vars below need to be modified to match input u get from exercise
-    rangeStart = 146810
-    rangeEnd = 612564
+    rangeStart = 136760
+    rangeEnd = 595730
     processNum(rangeStart, rangeEnd, 0)
   end
 end
