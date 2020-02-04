@@ -12,14 +12,15 @@ defmodule ManhattanDistance do
     inputOneFormatted = formatInput(inputOne)
     inputTwoFormatted = formatInput(inputTwo)
     visitedPointsMap = %{}
-    wireOnePoints = produceVisitedPointsForWireInput(visitedPointsMap, inputOneFormatted, 0, 0, 0)
-    wireTwoPoints = produceVisitedPointsForWireInput(visitedPointsMap, inputTwoFormatted, 0, 0, 0)
+    wireOnePoints = produceVisitedPointsForWireInput(visitedPointsMap, inputOneFormatted, 0, 0, 0, 1)
+   # IO.inspect(Map.get(wireOnePoints, "10_0"))
+    wireTwoPoints = produceVisitedPointsForWireInput(visitedPointsMap, inputTwoFormatted, 0, 0, 0, 1)
     duplicatePoints = Map.keys(wireOnePoints)
-                      |> Enum.filter(fn x -> Map.has_key?(wireTwoPoints, x) end)
-                      |> Enum.map(fn x -> x end)
-                      |> Enum.map(fn x ->calculateManhattanDistance(x) end)
+                      |> Enum.filter(fn x -> Map .has_key?(wireTwoPoints, x) end)
+                      |> Enum.map(fn x -> Map.get(wireOnePoints, x) + Map.get(wireTwoPoints, x) end)
+                      # |> Enum.map(fn x ->calculateManhattanDistance(x) end)
                       |> Enum.sort
-    IO.inspect(duplicatePoints)
+   # IO.inspect(duplicatePoints)
     Enum.at(duplicatePoints, 0)
   end
 
@@ -30,18 +31,20 @@ defmodule ManhattanDistance do
     abs(0 - x) + abs(0 - y)
   end
 
-  def produceVisitedPointsForWireInput(visitedPointsMap, inputArray, index, x, y) do
+  def produceVisitedPointsForWireInput(visitedPointsMap, inputArray, index, x, y, numberOfSteps) do
     currentElement = Enum.at(inputArray, index)
     direction = String.slice(currentElement, 0..0)
     value = String.to_integer(String.slice(currentElement, 1..String.length(currentElement)-1))
-    modifiedMap = funkcja(visitedPointsMap, direction, value, x, y, 1)
+    modifiedMap = populateMapWithPoints(visitedPointsMap, direction, value, x, y, 1, numberOfSteps)
+    mapValues = Map.values(modifiedMap)
+    modifiedNumberOfSteps = Enum.at(mapValues, Enum.count(mapValues) - 1)
     nextElement = Enum.at(inputArray, index + 1)
     if nextElement != nil do
       cond do
-        direction == "R" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x + value, y)
-        direction == "L" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x - value, y)
-        direction == "U" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x, y + value)
-        direction == "D" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x, y - value)
+        direction == "R" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x + value, y, modifiedNumberOfSteps)
+        direction == "L" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x - value, y, modifiedNumberOfSteps)
+        direction == "U" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x, y + value, modifiedNumberOfSteps)
+        direction == "D" -> produceVisitedPointsForWireInput(modifiedMap, inputArray, index + 1, x, y - value, modifiedNumberOfSteps)
       end
     else
       modifiedMap
@@ -57,11 +60,11 @@ defmodule ManhattanDistance do
     end
   end
 
-  def funkcja(pointsMap, direction, value, previousX, previousY, iterator) do
+  def populateMapWithPoints(pointsMap, direction, value, previousX, previousY, iterator, numberOfSteps) do
     key = getPointKey(direction, previousX, previousY, iterator)
-    modifiedMap = Map.put(pointsMap, key, true)
+    modifiedMap = Map.put(pointsMap, key, numberOfSteps)
     if iterator <= value do
-      funkcja(modifiedMap, direction, value, previousX, previousY, iterator+1)
+      populateMapWithPoints(modifiedMap, direction, value, previousX, previousY, iterator+1, numberOfSteps + 1)
     else
       modifiedMap
     end
