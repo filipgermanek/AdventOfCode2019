@@ -3,9 +3,9 @@ defmodule Ex5 do
     splitNum= Integer.digits(number)
     firstNumber= append(Enum.count(splitNum), splitNum)
     if(Enum.at(firstNumber, 3)== 0) do
-      opCode= Enum.at(firstNumber,4)
+      opcode= Enum.at(firstNumber,4)
     else
-      opCode= String.to_integer(Integer.to_string(Enum.at(firstNumber, 3)) <> "" <> Integer.to_string(Enum.at(firstNumber, 4)))
+      opcode= String.to_integer(Integer.to_string(Enum.at(firstNumber, 3)) <> "" <> Integer.to_string(Enum.at(firstNumber, 4)))
     end
   end
 
@@ -29,6 +29,7 @@ defmodule Ex5 do
   end
 
   def processInput(param1, param2, param3, opcode, param1Mode, param2Mode, param3Mode, inputArray) do
+    IO.inspect "opcode is #{opcode}"
     cond do
       opcode==99 ->
         inputArray
@@ -44,22 +45,31 @@ defmodule Ex5 do
         value = readInput
         List.replace_at(inputArray, param1, value)
       opcode==4 ->
+        IO.inspect "param1 #{param1} param1Mode #{param1Mode}"
         value = getValue(param1, param1Mode, inputArray)
         IO.puts value
         inputArray
       opcode == 5 ->
+
         #if param1 is NOT 0 go to index = getValue(param2) else just skip to next instruction
         value1 = getValue(param1, param1Mode, inputArray)
         if value1 != 0 do
           value2 = getValue(param2, param2Mode, inputArray)
+          #TODO this is wrong because after this is done processing index is back to previous value
           processInstruction(value2, inputArray)
+        else
+          IO.inspect "should be printed"
+          inputArray
         end
       opcode == 6 ->
         #if param1 is 0 go to index = getValue(param2) else just skip to next instruction
         value1 = getValue(param1, param1Mode, inputArray)
         if value1 == 0 do
           value2 = getValue(param2, param2Mode, inputArray)
+            #TODO this is wrong because after this is done processing index is back to previous value
           processInstruction(value2, inputArray)
+        else
+          inputArray
         end
       opcode == 7 ->
         # if param1 < param2 store 1 in the position given by param3 else store 0 in the position given by param3
@@ -94,21 +104,33 @@ defmodule Ex5 do
   #  IO.inspect "loop at index #{startIndex}"
     instruction = Enum.at(inputArray, startIndex)
     opcode = getOpcode(instruction)
-    param1 = Enum.at(inputArray, startIndex + 1)
-    param2 = Enum.at(inputArray, startIndex + 2)
-    param3 = Enum.at(inputArray, startIndex + 3)
-    param1Mode = getMode(instruction, 1)
-    param2Mode = getMode(instruction, 2)
-    param3Mode = getMode(instruction, 3)
-    modifiedInputArray = processInput(param1, param2, param3, opcode, param1Mode, param2Mode, param3Mode, inputArray)
-    isThreeParamOpcode = opcode == 1 || opcode == 2 || opcode == 7 || opcode == 8
-    isTwoParamOpcode = opcode == 3 || opcode == 4
-    if opcode != 99 &&
-      ((isThreeParamOpcode && Enum.at(modifiedInputArray, startIndex + 4) != nil)
-      || (isTwoParamOpcode && Enum.at(modifiedInputArray, startIndex + 2) != nil)) do
-      cond do
-        isThreeParamOpcode -> processInstruction(startIndex + 4, modifiedInputArray)
-        isTwoParamOpcode -> processInstruction(startIndex + 2, modifiedInputArray)
+    if opcode == 99 do
+      nil
+    else
+      param1 = Enum.at(inputArray, startIndex + 1)
+      param2 = Enum.at(inputArray, startIndex + 2)
+      param3 = Enum.at(inputArray, startIndex + 3)
+      param1Mode = getMode(instruction, 1)
+      param2Mode = getMode(instruction, 2)
+      param3Mode = getMode(instruction, 3)
+      # TODO you have to process opcode 5 and 6 here because if its processed in processInstruction function after index is back to previous value
+      if opcode == 5 || opcode == 6 do
+
+      end
+      modifiedInputArray = processInput(param1, param2, param3, opcode, param1Mode, param2Mode, param3Mode, inputArray)
+      isThreeParamOpcode = opcode == 1 || opcode == 2 || opcode == 7 || opcode == 8
+      isOneParamOpcode = opcode == 3 || opcode == 4
+      isTwoParamOpcode = opcode == 5 || opcode == 6
+      IO.inspect modifiedInputArray
+      IO.inspect "opcode dd is #{opcode} startIndex #{startIndex}"
+      if (isThreeParamOpcode && Enum.at(modifiedInputArray, startIndex + 4) != nil)
+        || (isOneParamOpcode && Enum.at(modifiedInputArray, startIndex + 2) != nil)
+        || (isTwoParamOpcode && Enum.at(modifiedInputArray, startIndex + 3) != nil) do
+        cond do
+          isOneParamOpcode -> processInstruction(startIndex + 2, modifiedInputArray)
+          isTwoParamOpcode -> processInstruction(startIndex + 3, modifiedInputArray)
+          isThreeParamOpcode -> processInstruction(startIndex + 4, modifiedInputArray)
+        end
       end
     end
   end
